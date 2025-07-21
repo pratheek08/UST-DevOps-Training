@@ -1,0 +1,946 @@
+multi comment in bash:
+
+:" dyf
+cjfdby 
+dcbdnr
+wcbhdn"
+
+Conditional statements:
+======================
+
+if/else:
+=======
+
+#!bin/bash
+read -p "Enter any number : " num
+
+if [ $num -gt 100];
+then 
+echo "$num is greater than 100"
+else
+echo "$num is less than 100"
+fi
+
+
+
+
+Case statement:
+===============
+
+#!bin/bash
+read -p "Enter any number in (0-4) : " num
+
+case $num in
+	0)
+	echo "Enter number is $num"
+	echo
+	;;
+	
+	1|2|3)
+	echo "Enter number is $num"
+	echo
+	;;
+	
+	4)
+	echo "Enter number is $num"
+	echo
+	;;
+	
+esac
+
+
+for loop:
+=========
+
+for i in 0 1 2 3 4 ;
+do
+echo $i
+done
+
+for i in ram raju ust;
+do
+echo $i
+done
+
+for ((i=0;i<5;i++));
+do
+echo $i
+done
+
+Do-While loop:
+=============
+
+#!bin/bash
+read -p "Enter any number : " num
+
+while [ num -lt 0 ];
+do 
+echo num
+num-=1
+done
+
+
+exit status:
+============
+
+0:success
+1:minior problem
+2: serious trouble
+3- 255 :any other status
+
+
+we use $? to find the status of previous/before command
+
+example code:
+-------------
+#!bin/bash
+echo Hi
+echo $?
+
+o/p:
+----
+Hi
+0
+
+
+
+real Life scripting :
+Accessing data from file:
+=========================
+
+
+copy message log file from root directory to user 
+
+example code:
+su -     # go root directory
+cp var/log/messages home/user/pavan/myScripts    #coping msg log file to user directory
+ 
+
+now change group of msg file to pavan
+
+chgrp pavan messages
+
+
+change ownership of 
+
+chown pavan messages
+
+
+scripts to get errors, fail, and warns
+
+grep -i error /home/pavan/myScripts/messages    # -i to ignore the casesensitive  # to get errors 
+
+grep -i warn /home/pavan/myScripts/messages   # -i to ignore the casesensitive  # to get warnings 
+
+grep -i fail /home/pavan/myScripts/messages   # -i to ignore the casesensitive  # to get failure cases
+
+the above commands returns the o/p 
+
+to store/save the o/p we use the following files
+
+grep -i error /home/pavan/myScripts/messages >  /home/pavan/myScripts/output-errors # -i to ignore the casesensitive  # to get errors 
+
+grep -i warn /home/pavan/myScripts/messages  >  /home/pavan/myScripts/output-warn # -i to ignore the casesensitive  # to get warnings 
+
+grep -i fail /home/pavan/myScripts/messages  >  /home/pavan/myScripts/output-fail # -i to ignore the casesensitive  # to get failure cases
+
+ 
+
+
+
+commands in sample.sh file
+
+date
+uptime
+df -h
+
+run the file using absolute path Ex: ./sample.sh
+
+to get first column of output use following cmd:
+
+./sample.sh | awk '{print $1}'
+
+
+
+
+to check connectivity status:
+=============================
+
+ping IP cmd is used to connectivity status of that ip/host
+
+in sample file
+
+host = 192.168.1.1
+ping -c1 $host
+	if [ $? -eq 0]
+	then
+	echo $host is connected
+	else
+	echo $host is not connected
+	fi
+
+o/p:
+
+one of ping o/p 
+192.168.1.1 is connected
+
+
+
+in sample file
+
+host = 192.168.1.235
+ping -c1 $host
+	if [ $? -eq 0]
+	then
+	echo $host is connected
+	else
+	echo $host is not connected
+	fi
+
+o/p:
+
+one of ping o/p 
+192.168.1.235 is not connected
+
+
+in sample file
+
+host = 192.168.1.1
+ping -c1 $host &> dev/null   # dev null is use to store the o/p of ping cmd {it store null in it}
+	if [ $? -eq 0]
+	then
+	echo $host is connected
+	else
+	echo $host is not connected
+	fi
+
+o/p:
+
+one of ping o/p 
+192.168.1.1 is connected
+
+
+
+check status of list of Ip address at a time
+
+in sample-IP file:
+192.168.1.1  # 172.18.0.1
+192.168.1.235
+
+
+in sample file:
+
+IPLIST="/home/pavan/myScripts/sample-IP"
+
+for i in $(cat $IPLIST)
+do
+ping -c1 $i &> /dev/null
+	if [ $? -eq 0]
+	then
+	echo $i is connected
+	else
+	echo $i is not connected
+	fi
+done
+
+
+	
+
+
+
+Script Schedules and Notification:
+===================================
+
+
+to schedule use cron job 
+
+to notification use mail
+
+
+scheduling a task to trigger or run at particular time in month, day , year and etc
+
+use crontab -e     # -e to edit  
+    ==========
+
+after entering crontab -e schedule the time for task
+
+min hour day-of-the-month month-of-the-year day-of-the-week 'path to file to run' > ' file to store the o/p'
+
+
+example:
+
+22 8 * * * home/pavan/myScripts/sample.sh > schedule-output
+
+ 
+
+for notification    # -s is subject of mail
+
+22 8 * * * home/pavan/myScripts/sample.sh | mail -s "Connectivity status" ram232@gmail.com
+
+
+
+Scripts to delete old files:
+============================
+
+create file in older timestamp   
+
+touch -d "Thu, 1 May 2023 12:30:00" file_name  #here -d determines date
+
+to delete file
+find /home/pavan/myScripts -mtime +90 -exec rm {} \;
+
+to mv the file and rename it as file_name.old
+find /home/pavan/myScripts -mtime +90 -exec mv{} {}.old \;
+
+
+Scripts to BackUp file system:
+=============================
+
+/etc directory contains configuration files
+/var directory contains Apache and log in details
+
+tar should be used in root dir:
+tar cmd:
+tar cvf destination_file_path source_path1 source_path2 ..
+
+
+tar cvf /tmp/backup.tar /etc /var
+
+
+gzip cmd:
+
+gzip is used to reduce/compress the tar file size
+
+gzip /tmp/backup.tar
+
+then it convert the backup.tar file to backup.tar.gz
+
+
+Back upping the file system(FS) and moving the backup.tar.gz file to other location
+
+sample script in backupfs.sh
+
+tar cvf /tmp/backup.tar /etc /var #getting tar file(zip file)
+
+gzip /tmp/backup.tar # getting zip or compressed zip file of tar file
+
+find /tmp/backup.tar.gz -mtime -1 -type f -print &> /dev/null  # finding the todays back up file and moving to /dev/null
+
+if [ $? -e 0]
+	then
+	echo backup completed
+	#scp /tmp/backup.tar.gz root@192.168.1.x:/path
+	else
+	echo backup failed
+fi
+
+
+
+
+
+For loops scripts for fieSystem-1:
+==================================
+multiple counting
+
+
+
+simple counting
+simpleCounting.sh:
+for i in  {1..10}
+do 
+	echo $i
+	sleep 1 # stops for 1 sec (sleep)
+done
+
+
+ 
+creating multiple file with diff name
+
+for i in  {1..10}
+do 
+	touch ust.$i
+done
+
+
+creating multiple file with user input
+
+read -p "Enter No.of file to create: " num
+read -p "Enter start name of files : " name
+for i in $(seq 1 $num)
+do
+	touch $name.$num
+done
+
+
+
+assigning write permissions to file:
+ 
+for i in ust.*:
+do
+	echo assigning permissions to ust.$i
+	chmod a+x ust.$i
+	sleep 1
+done
+
+
+assigning write permissions to file how much time it take 
+
+total = ls -l ust* | wc -l
+echo it will take $total seconds to assign permissions
+for i in ust.*
+do
+	echo assigning permissions to ust.$i
+	chmod a+w ust.$i
+	sleep 1
+done
+
+
+
+for loop scripts for fs-2:
+=========================
+
+
+
+Rename all *.txt files to .none files:
+
+
+for file_name in *.txt:
+do
+	mv $file_name ${file_name%.txt}.none  # hare % is wild card
+done
+
+
+Check to see if file exist:
+
+Files="/etc/passwd
+/etc/group
+/etc/shadow
+/etc/nsssitch.conf
+/etc/sshd_ssh_config
+/etc/fake"
+
+for f in $Files
+do
+	if [ ! -e $f]
+	then 
+		echo $f do not exit
+	fi
+done
+
+
+
+
+
+
+
+Copy files to remote hosts:
+===========================
+
+
+for i in redhat1 redhat2 redhat3
+do 
+	scp  somefile $i:/tmp
+done
+
+ex2:
+a='cat /home/pavan/floder_name'
+for i in $a
+do 
+	scp  somefile $i:/tmp
+done
+
+
+
+
+Directory Assignment:
+====================
+dir in /etc/passwd does not belong to user 
+
+so we match usersfrom /etc/passwd to /home/DIR
+
+in root create a dir(junos) for user
+
+
+in check user assigned or not file
+ 
+cd /home
+for d in *	#d get al the dir in home dir
+do
+	check=$(grep -c "home/$d" "/etc/passwd")   # here -c is to count the no of matchs
+	if [$check -gt 1]
+	then 
+		echo $d is assigned to user
+	else
+		echo $d is not assigned to user
+	fi
+done
+	
+
+
+
+to get only not assigned run after runningthe above file 
+
+./checkdir | grep NOT  
+
+
+
+
+
+
+
+
+List of user LOGGED in by DATE:
+===============================
+
+script to look for users logged in today/date
+script to ask for user i/p to pull user
+
+command LATE is used to get all logged user today
+
+last
+last | more
+last | grep Mon # get all Mondays log users 
+
+last | grep "Thu OCT 05" # get only on that specific date 
+
+
+get only first 3 columns 
+date | awk '{print $1, $2, $3}'
+
+
+script users logged on date 
+
+da=date | awk '{print $1, $2, $3}'
+last | grep "$da" | awk '{print $1}'
+
+
+ask user to enter i/p :
+
+
+read -p "Enter a day(Mon) :" d
+read -p "Enter a month(Aug) :" m
+read -p "Enter a date(20) :" da
+
+last | grep "$d $m $da"
+
+
+
+
+
+CENTRAL LOGGING:
+
+to get error msgs :
+
+cat /var/messages | grep -i error
+
+Scripts to trace /var/log/messages file
+in logtail.sh
+
+tail -fn0 /var/log/messages | while read line  # here -fn0 is to get the live/latest errors 
+do 
+echo $line | egrep -i "refused|invalid|error|fail|lost|shut|down|offline"
+	if [ $? = 0]
+	then 
+	echo $line >> /tmp/filtered-messages
+	else
+	fi
+done
+
+
+to send error use :
+
+logger -t error "hi ust"
+
+
+run the script in background:
+
+nohup /file_path/logtail &
+
+to see the above cmd o/p:
+
+ps -ef | grep logtail
+
+
+to bring foreground:
+
+fg
+
+user/admin notification:
+
+in log-Alert.sh:
+
+IT="ram@gmail.com,dan@gmail.com"
+if [ -s /tmp/filtered-messages ]
+	then 
+	cat /tmp/filtered-messages | sort |uniq | mail -s 'syslog msg" $IT
+	else
+	fi
+	
+ 
+schedule the script through cronjob:
+
+cmd1 :- crontab -e
+
+in it 
+*/15 * * * /root/log-Alert # it in every 15mins
+
+
+
+
+
+USER Account Management:
+
+
+create a user with i/p:(in root dir)
+
+read -p "enter a user name : " name
+useradd $nam
+echo $name account created 
+
+
+
+# to get a user use 
+grep user_name /etc/paswd
+
+
+
+#Giving error if user already exist:
+
+
+read -p "enter a user name : " name
+grep -q $name /etc/passwd
+if [ $? -eq 0]
+then 
+	echo error user alredy exist
+	echo please choose other user name
+	exit 0
+fi
+useradd $nam
+echo $name account created 
+
+# add user descre
+
+
+
+read -p "enter a user name : " name
+grep -q $name /etc/passwd
+if [ $? -eq 0]
+then 
+	echo error user alredy exist
+	echo please choose other user name
+	exit 0
+fi
+read -p "enter user descript : "des
+
+useradd $nam -c "$des"
+echo $name account created 
+
+
+
+# adding user with user ID
+
+
+read -p "enter a user name : " name
+grep -q $name /etc/passwd
+if [ $? -eq 0]
+then 
+	echo error user alredy exist
+	echo please choose other user name
+	exit 0
+fi
+read -p "enter user descript : "des
+reda -p "if you want to add user Id (Y/N):" yn
+
+if [ $yn==Y]
+then
+	read -p "Enter UID : " uid
+	grep -q $uid /etc/passwd
+	if [ $? -eq 0]
+	then
+		error uid alredy exist
+	else
+		useradd $name -c "$des" -u $uid
+	echo user created
+	fi
+elif [$yn == N]
+echo no worries 
+useradd $nam -c "$des"
+fi 
+
+
+# to get all the user 
+cat /etc/passwd
+
+
+Disable Inactive users:
+=======================
+
+
+in root dirc:
+
+run cmds to identify users:
+get the all the user inactive for 90
+
+lastlog -b 90 | tail -n+2
+
+ 
+create scripts in for loop to disable inactive accounts
+
+
+in disable_user.sh:
+a=lastlog | tail -n+2 | grep 'test' | awk '{print $1}'
+for i in $a
+do
+	usermod -L $i #here -L is for disable
+done
+
+
+lastlog is used to find thelast logged
+
+
+the /etc/shadow add ! mark to user to deny access
+to remove use vi /etc/shadow and the user name and remove the ! mark before $ mark
+
+
+ 
+create scripts with xargs to disable inactive accounts
+
+
+in disable_user_using_xargs.sh:
+lastlog | tail -n+2 | grep 'test' | awk '{print $1}' | xargs -I{} usermod -L {}
+
+
+Check process status and kill/stopping it:
+==========================================
+In home/user dir:
+
+ps -ef | grep "sleep 600" # get the sleep 600 process details
+
+ps -ef | grep "sleep 600" | grep -v grep # exclude the grep cmd in o/p
+
+ps -ef | grep "sleep 600" | grep -v grep | awk '{print $2 }' # get only column 2(i.e process ID)
+
+ps -ef | grep "sleep 600" | grep -v grep | awk '{print $2 }' | xargs -I{} echo {} # o/p is strored in xargs
+
+ps -ef | grep "sleep 600" | grep -v grep | awk '{print $2 }' | xargs -I{} kill {} # the sleep 600 process is stopped/ killed
+
+
+create process/dummy process:
+sleep 600
+run the cmd to find the process ID:
+ps -ef | grep "sleep 600" | grep -v grep | awk '{print $2 }' # get only column 2(i.e process ID)
+
+createa script to kill process:
+ps -ef | grep "sleep 600" | grep -v grep | awk '{print $2 }' | xargs -I{} kill {}
+echo all sleeping process are killed
+
+
+
+
+
+disk space status check:
+=======================
+
+find disk space using df cmd # du cmd for disk usage
+
+use df -h cmd to get the details of dick 
+
+df -h | egrep -v "tmpfs|devtmpfs" # get details other than tnfs dir
+
+ df -h | egrep -v "tmpfs|devtmpfs" | tail -n+2 # remove 1st line haedings of table
+
+df -h | egrep -v "tmpfs|devtmpfs" | tail -n+2 | awk '{print $5}' # get only 5 the column
+
+df -h | egrep -v "tmpfs|devtmpfs" | tail -n+2 | awk '{print $5}' | cut -d'%' -f1 #removeing % mark in o/p
+
+in checkDiskStatus.sh:
+
+a=df -h | egrep -v "tmpfs|devtmpfs" | tail -n+2 | awk '{print $5}' | cut -d'%' -f1
+for i in $a
+do 
+	if [ $i -ge 90]
+	then 
+	echo chech disk status 
+	fi
+done
+
+
+
+a=df -h | egrep -v "tmpfs|devtmpfs" | tail -n+2 | awk '{print $5}' | cut -d'%' -f1
+for i in $a
+do 
+	if [ $i -ge 90]
+	then 
+	echo chech disk status $i ' df -h | grep $i '
+	fi
+done
+
+
+
+diff scripts that will filter the o/p and compare(long)
+
+df -H | grep -vE'^Filesyatem|tmpfs|cdrom' | awk '{print $5,$1}' | while read output
+do 
+	usep=$(echo $output |awk '{print $1}' | cut -d'%' -f1)
+	partition=$(echo $output | awk '{print $2}')
+
+	if [ $usep -ge 50]
+	then 
+	echo 'Running out of space \"$partitin ($usep%)\" on $(hostname) as on$(date)"
+	fi
+done
+
+df -h | awk '0+$5 >= 10 {print}'  | awk '{print $5,$6}'
+
+
+Status on total no of files(send alert if files are less than ):
+
+Run cmd 'ls-l' with diff option :
+wc -l # is ued to find the count
+ls -l file* | wc -l # get all the file with name  file*
+
+a=ls -l file* | wc -l
+if [ $a -eq 20]
+then
+	echo 20 files
+else 	echo less than 20 files
+fi
+
+
+create script to perform comparsion
+schedule and notify
+
+
+
+
+
+create system Inventory(with user i/p):
+=======================================
+in add_record:
+clear
+
+read -p " Enter host name :" host
+
+grep -q $host /home/pavan/myScripts/database
+if [ $? -eq 0]
+then 
+echo Error host alredy exists
+exit 0
+fi
+
+read -p " Enter host IP :" ip
+
+grep -q $ip /home/pavan/myScripts/database
+if [ $? -eq 0]
+then 
+echo Error ip alredy exists
+exit 0
+fi
+
+read -p " Enter host desc :" desc
+
+echo $host $ip $desc >> /home/pavan/myScripts/database
+ echo host added
+
+
+
+
+
+
+in deleteRecord:
+clear
+read -p " Enter host name :" hostip
+
+grep -q $hostip /home/pavan/myScripts/database
+if [ $? -eq 0]
+then 
+sed -i '/'$hostip'/d' /home/pavan/myScripts/database
+echo $hostip deleted
+else record of $hostip is does not exists
+fi
+
+
+
+
+int delAdd:
+
+read -p "a to add host : \n d to delete host : " choice 
+
+case $choice in 
+a) /home/pavan/myScripts/database/addRecord
+d) /home/pavan/myScripts/database/delRecord
+*) invalid choice
+esac
+
+
+
+
+Getting online help:
+====================
+
+
+
+use online resources:
+
+precise search
+2nd opinion
+ask question
+create documenttation 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
