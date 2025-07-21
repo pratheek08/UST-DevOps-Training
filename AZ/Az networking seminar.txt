@@ -1,0 +1,81 @@
+
+
+-------------------------
+
+NSG
+lets quickly start by creating NSG
+
+NSGs come with predefined default rules to allow basic internal communication and internet access. These rules are prioritized lower than any custom rules.
+
+1. Inbound Default Rules:
+
+AllowVNetInBound : Allows all inbound traffic from within the same virtual network (VNet).
+AllowAzureLoadBalancerInBound : Allows inbound traffic from the Azure Load Balancer for services such as health probes.
+DenyAllInbound : Denies all other inbound traffic not explicitly allowed by higher-priority rules.
+
+2. Outbound Default Rules:
+
+AllowVNetOutBound : Allows outbound traffic to the same virtual network (VNet).
+AllowInternetOutBound : Allows outbound traffic to the internet (if the outbound traffic is destined for a public IP).
+DenyAllOutbound : Denies all other outbound traffic not explicitly allowed by higher-priority rules.
+
+----------------------------
+
+VNET PEERING
+VNet Peering allows you to connect two or more VNets in the same or different Azure regions, where VM's can communicate with each other
+
+
+b4 that there's Non-Transitive Peering - 
+If VNet A is peered with VNet B, and VNet B is peered with VNet C, VNet A cannot communicate with VNet C unless there is an explicit peering between VNet A and VNet C.
+
+----------------------------
+
+Hybrid cloud
+
+A hybrid cloud approach combines:
+				On-premises infrastructure and
+				Cloud services
+
+1. Azure VPN gateway - is a Secure tunnel over the internet
+Types:
+
+Site-to-Site - This is a VPN connection between an on-premises network and Azure.
+
+Point-to-Site - This allows individual devices (such as laptops or mobile devices) to securely connect to an Azure VNet
+
+VNet-to-VNet - This is a VPN connection between an on-premises network and Azure.
+
+
+2. Azure ExpressRoute
+
+Private connection to Azure (not over public internet)
+
+ExpressRoute is preferred where performance, security, Higher reliability and speed are essential. It provides direct connectivity through a service provider.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
